@@ -1,6 +1,14 @@
-params ["_classname", "_pos", "_dir", "_minTime", "_countLeft", "_forced"];
+params ["_vehicle", "_pos", "_dir", "_minTime", "_countLeft", "_forced"];
 
+private _classname = typeOf _vehicle;
+
+if (!([_vehicle, _pos] call GRAD_vehicleRespawn_fnc_isSpawnFree)) exitWith {
+	// yeah, nothing	
+};
+
+GRAD_vehicleRespawnVehicles = GRAD_vehicleRespawnVehicles - [_vehicle]; // deleteAt gets confused
 _vehicle = createVehicle [_classname, [0,0,0], [], 0, "CAN_COLLIDE"];
+
 _vehicle setPos _pos;
 _vehicle setDir _dir;
 

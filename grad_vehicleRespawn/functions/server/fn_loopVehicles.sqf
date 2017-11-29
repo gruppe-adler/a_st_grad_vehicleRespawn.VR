@@ -13,17 +13,22 @@
     
 
     if (_countLeft < 1) exitWith { diag_log format ["GRAD_vehicleRespawnVehicles: no more vehicles available for : %1", _x]};
-    if (!isNull _vehicle && {!canMove _vehicle} || {!alive _vehicle} || {_forced}) then {
+    
+    private _exists = !isNull _vehicle;
+    private _cantMove = canMove _vehicle;
+    private _destroyed = alive _vehicle;
 
-        if (_initialTime + _minTime < CBA_missionTime && {[_vehicle] call GRAD_vehicleRespawn_fnc_isSpawnFree}) then {
-            [typeOf _vehicle, _pos, _dir, _minTime, _countLeft - 1] call GRAD_vehicleRespawn_fnc_respawnVehicleNow;
-            GRAD_vehicleRespawnVehicles deleteAt _forEachIndex;
+    hintSilent format ["%1, %2, %3, %4", _exists, _cantMove, _destroyed, nearestObjects [_pos, [typeOf _vehicle], (sizeOf typeOf _vehicle)/2, true]];
+    // hintSilent format ["time to respawn: %1, current time: %2", _initialTime + _minTime, CBA_missionTime];
+
+    if (_exists && CBA_missionTime > 10) then {
+        if (_cantMove || _destroyed || _forced) then {
+            if (_initialTime + _minTime < CBA_missionTime) then {
+                [_vehicle, _pos, _dir, _minTime, _countLeft - 1] call GRAD_vehicleRespawn_fnc_respawnVehicleNow;
+            };
         };
     };
 
-    hintSilent format ["time to respawn: %1, current time: %2", _initialTime + _minTime, CBA_missionTime];
-    // hintsilent format ["GRAD_vehicleRespawnVehicles : %1", GRAD_vehicleRespawnVehicles];
-
   } forEach GRAD_vehicleRespawnVehicles;
 
-}, 5, []] call CBA_fnc_addPerFrameHandler;
+}, 1, []] call CBA_fnc_addPerFrameHandler;

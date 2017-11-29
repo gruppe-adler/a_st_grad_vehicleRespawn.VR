@@ -1,7 +1,5 @@
 params ["_vehicle", "_minTime", "_count", "_forced"];
 
-diag_log format ["GRAD_respawnVehicle: entering adding %1 to respawn", _vehicle];
-
 // safety net
 if (!isServer) exitWith {};
 
